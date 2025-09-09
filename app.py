@@ -6,10 +6,10 @@ from transliterator import Transliterator
 # Create FastAPI app
 app = FastAPI()
 
-# Allow React frontend (CORS settings)
+# Allow frontend (CORS settings)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # later restrict to your React domain
+    allow_origins=["*"],  # later restrict to your Firebase domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -22,7 +22,12 @@ model = Transliterator()
 class TextRequest(BaseModel):
     text: str
 
-# Endpoint
+# Health check
+@app.get("/")
+def root():
+    return {"message": "Backend is running!"}
+
+# Transliteration endpoint
 @app.post("/transliterate")
 def transliterate_text(req: TextRequest):
     devanagari = model.transliterate(req.text)
